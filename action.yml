@@ -6,7 +6,7 @@ inputs:
   secrets:
     description: |-
       Secrets required during deployment.
-    required: true
+    required: false
   credentials_json:
     description: |-
       Credential file for GCP authentication.
