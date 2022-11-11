@@ -9,7 +9,7 @@ inputs:
     required: true
   credentials_json:
     description: |-
-      XXX YYY
+      Credential file for GCP authentication.
     required: true
   gcp_region:
     description: |-
@@ -17,31 +17,27 @@ inputs:
     required: true
   project_id:
     description: |-
-      XXX YYY
+      GCP project ID to deploy on.
     required: true
   service_id:
     description: |-
-      XXX YYY
+      This is the name of service which needs to be deployed.
     required: true
   sql_instance:
     description: |-
-      XXX YYY
+      SQL instance name to attach it to cloud run service.
     required: true
   port:
     description: |-
-      XXX YYY
+      Port number on which application is running.
     default: 3000
   service_account:
     description: |-
-      XXX YYY
+      Service acoount to attact to cloud run service.
     required: true
-  environment:
-    description: |-
-      XXX YYY
-    default: development
   tag:
     description: |-
-      container tage
+      container tag
     default: latest
 runs:
   steps:
@@ -55,9 +51,10 @@ runs:
       with:
         project_id: ${{ inputs.project_id }}
     - name: Set VPC_CONNECTOR env variable
+      shell: bash
       run: |
         echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
-    - id: Deploy to Cloud Run
+    - id: Deploy_to_CloudRun
       uses: google-github-actions/deploy-cloudrun@v0
       with:
         service: ${{ inputs.service_id }}
