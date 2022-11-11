@@ -1,5 +1,5 @@
-name: 'Deploy to Cloud Run'
-author: 'SafeHouse Tech.'
+name: "Deploy to Cloud Run"
+author: "SafeHouse Tech."
 description: |-
   An action to deploy a docker image to cloud run.
 inputs:
