@@ -1,0 +1,67 @@
+name: 'Deploy to Cloud Run'
+author: 'SafeHouse Tech.'
+description: |-
+  An action to deploy a docker image to cloud run.
+inputs:
+  secrets:
+    description: |-
+      Secrets required during deployment.
+    required: true
+  credentials_json:
+    description: |-
+      XXX YYY
+    required: true
+  gcp_region:
+    description: |-
+      The GCP region to deploy to.
+    required: true
+  project_id:
+    description: |-
+      XXX YYY
+    required: true
+  service_id:
+    description: |-
+      XXX YYY
+    required: true
+  sql_instance:
+    description: |-
+      XXX YYY
+    required: true
+  port:
+    description: |-
+      XXX YYY
+    default: 3000
+  service_account:
+    description: |-
+      XXX YYY
+    required: true
+  environment:
+    description: |-
+      XXX YYY
+    default: development
+  tag:
+    description: |-
+      container tage
+    default: latest
+runs:
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Authenticate in GCloud
+      uses: google-github-actions/auth@v0
+      with:
+        credentials_json: ${{ inputs.credentials_json }}
+    - uses: google-github-actions/setup-gcloud@v0
+      with:
+        project_id: ${{ inputs.project_id }}
+    - name: Set VPC_CONNECTOR env variable
+      run: |
+        echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+    - id: Deploy to Cloud Run
+      uses: google-github-actions/deploy-cloudrun@v0
+      with:
+        service: ${{ inputs.service_id }}
+        image: gcr.io/${{ inputs.project_id }}/safehouse/${{ inputs.service_id }}:${{ inputs.tag }}'
+        secrets: ${{ inputs.secrets }}
+        region: ${{ inputs.gcp_region }}
+        flags: --set-cloudsql-instances=${{ inputs.project_id }}:${{ inputs.sql_instance }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} --vpc-egress=all-traffic
