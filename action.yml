@@ -26,7 +26,7 @@ inputs:
   sql_instance:
     description: |-
       SQL instance name to attach it to cloud run service.
-    required: true
+    required: false
   port:
     description: |-
       Port number on which application is running.
