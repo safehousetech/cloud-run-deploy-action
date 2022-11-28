@@ -71,4 +71,4 @@ runs:
         image: gcr.io/${{ inputs.project_id }}/safehouse/${{ inputs.service_id }}:${{ inputs.tag }}
         secrets: ${{ inputs.secrets }}
         region: ${{ inputs.gcp_region }}
-        flags: ${{ inputs.set-cloudsql-instances }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
+        flags: --set-cloudsql-instances=${{ inputs.project_id }}:${{ inputs.sql_instance }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
