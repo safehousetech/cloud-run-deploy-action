@@ -30,6 +30,7 @@ inputs:
   sql_instance:
     description: |-
       SQL instance name to attach it to cloud run service.
+    default: backend-dev
     required: false
   port:
     description: |-
