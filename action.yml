@@ -32,6 +32,10 @@ inputs:
       SQL instance name to attach it to cloud run service.
     default: backend-dev
     required: false
+  set-cloudsql-instances:
+    description: |-
+      This is to set cloud sql instance.
+    required: false
   port:
     description: |-
       Port number on which application is running.
@@ -67,4 +71,4 @@ runs:
         image: gcr.io/${{ inputs.project_id }}/safehouse/${{ inputs.service_id }}:${{ inputs.tag }}
         secrets: ${{ inputs.secrets }}
         region: ${{ inputs.gcp_region }}
-        flags: --set-cloudsql-instances=${{ inputs.project_id }}:${{ inputs.sql_instance }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
+        flags: ${{ inputs.set-cloudsql-instances }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
