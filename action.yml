@@ -23,6 +23,10 @@ inputs:
     description: |-
       The GCP region to deploy to.
     required: true
+  shared_project_id:
+    description: |-
+      Shared project id for shared VPC connection.
+    required: false
   project_id:
     description: |-
       GCP project ID to deploy on.
@@ -67,7 +71,13 @@ runs:
     - name: Set VPC_CONNECTOR env variable
       shell: bash
       run: |
-        echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+        if [ ! -z "${{ inputs.shared_project_id }}" ]; then
+          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --project ${{ inputs.shared_project_id }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+          echo "PROJECT_ID=${{ inputs.shared_project_id }}" >> $GITHUB_ENV
+        else
+          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+          echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
+        fi
     - id: Deploy_to_CloudRun
       uses: google-github-actions/deploy-cloudrun@v0
       with:
@@ -76,4 +86,4 @@ runs:
         secrets: ${{ inputs.secrets }}
         env_vars: ${{ inputs.env_vars }}
         region: ${{ inputs.gcp_region }}
-        flags: --set-cloudsql-instances=${{ inputs.project_id }}:${{ inputs.sql_instance }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
+        flags: --set-cloudsql-instances=${{ env.PROJECT_ID }}:${{ inputs.sql_instance }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
