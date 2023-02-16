@@ -72,10 +72,10 @@ runs:
       shell: bash
       run: |
         if [ ! -z "${{ inputs.shared_project_id }}" ]; then
-          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --project ${{ inputs.shared_project_id }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region=${{ inputs.gcp_region }} --project ${{ inputs.shared_project_id }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
           echo "PROJECT_ID=${{ inputs.shared_project_id }}" >> $GITHUB_ENV
         else
-          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region ${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region=${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
           echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
         fi
     - id: Deploy_to_CloudRun
