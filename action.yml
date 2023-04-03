@@ -38,7 +38,7 @@ inputs:
   sql_instance:
     description: |-
       SQL instance name to attach it to cloud run service.
-    default: backend-dev
+    default: backend-db
     required: false
   set-cloudsql-instances:
     description: |-
