@@ -72,10 +72,24 @@ runs:
       shell: bash
       run: |
         if [ ! -z "${{ inputs.shared_project_id }}" ]; then
-          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region=${{ inputs.gcp_region }} --project ${{ inputs.shared_project_id }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+          # check if a connector with the region-based name exists
+          if gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --project ${{ inputs.shared_project_id }} &> /dev/null; then
+            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --project ${{ inputs.shared_project_id }} --format="get(CONNECTOR_ID)")
+          else
+            # fall back to selecting the most recently created connector
+            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors list --region="${{ inputs.gcp_region }}" --project="${{ inputs.shared_project_id }}" --sort-by="creationTimestamp desc" --format="get(CONNECTOR_ID)" | head -n 1)
+          fi
+          echo "VPC_CONNECTOR=${CONNECTOR_ID}" >> $GITHUB_ENV
           echo "PROJECT_ID=${{ inputs.shared_project_id }}" >> $GITHUB_ENV
         else
-          echo "VPC_CONNECTOR=$(gcloud compute networks vpc-access connectors list --region=${{ inputs.gcp_region }} --format="get(CONNECTOR_ID)" | sort -r | head -n 1)" >> $GITHUB_ENV
+          # check if a connector with the region-based name exists
+          if gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" &> /dev/null; then
+            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --format="get(CONNECTOR_ID)")
+          else
+            # fall back to selecting the most recently created connector
+            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors list --region="${{ inputs.gcp_region }}" --sort-by="creationTimestamp desc" --format="get(CONNECTOR_ID)" | head -n 1)
+          fi
+          echo "VPC_CONNECTOR=${CONNECTOR_ID}" >> $GITHUB_ENV
           echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
         fi
     - id: Deploy_to_CloudRun
