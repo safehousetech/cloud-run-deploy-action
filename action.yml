@@ -74,7 +74,7 @@ runs:
         if [ ! -z "${{ inputs.shared_project_id }}" ]; then
           # check if a connector with the region-based name exists
           if gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --project ${{ inputs.shared_project_id }} &> /dev/null; then
-            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --project ${{ inputs.shared_project_id }} --format="get(CONNECTOR_ID)")
+            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --project ${{ inputs.shared_project_id }} --format="get(name)")
           else
             # fall back to selecting the most recently created connector
             CONNECTOR_ID=$(gcloud compute networks vpc-access connectors list --region="${{ inputs.gcp_region }}" --project="${{ inputs.shared_project_id }}" --sort-by="creationTimestamp desc" --format="get(CONNECTOR_ID)" | head -n 1)
@@ -84,7 +84,7 @@ runs:
         else
           # check if a connector with the region-based name exists
           if gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" &> /dev/null; then
-            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --format="get(CONNECTOR_ID)")
+            CONNECTOR_ID=$(gcloud compute networks vpc-access connectors describe "${{ inputs.gcp_region }}" --region "${{ inputs.gcp_region }}" --format="get(name)")
           else
             # fall back to selecting the most recently created connector
             CONNECTOR_ID=$(gcloud compute networks vpc-access connectors list --region="${{ inputs.gcp_region }}" --sort-by="creationTimestamp desc" --format="get(CONNECTOR_ID)" | head -n 1)
