@@ -92,6 +92,11 @@ runs:
           echo "VPC_CONNECTOR=${CONNECTOR_ID}" >> $GITHUB_ENV
           echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
         fi
+    - name: Set SQL instance
+      shell: bash
+      run: |
+        if [ ! -z "${{ inputs.sql_instance }}" ]; then
+          echo "SQL_INSTANCE_ID='--set-cloudsql-instances=${{ env.PROJECT_ID }}:${{ inputs.sql_instance }}'" >> $GITHUB_ENV
     - id: Deploy_to_CloudRun
       uses: google-github-actions/deploy-cloudrun@v0
       with:
@@ -100,4 +105,4 @@ runs:
         secrets: ${{ inputs.secrets }}
         env_vars: ${{ inputs.env_vars }}
         region: ${{ inputs.gcp_region }}
-        flags: --set-cloudsql-instances=${{ env.PROJECT_ID }}:${{ inputs.sql_instance }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
+        flags: ${{ env.SQL_INSTANCE_ID }} --port=${{ inputs.port }} --service-account ${{ inputs.service_account }} --vpc-connector=${{ env.VPC_CONNECTOR }} ${{ inputs.gcloud_args }}
