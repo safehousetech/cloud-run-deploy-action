@@ -96,7 +96,7 @@ runs:
       shell: bash
       run: |
         if [ ! -z "${{ inputs.sql_instance }}" ]; then
-          echo "SQL_INSTANCE_ID='--set-cloudsql-instances=${{ env.PROJECT_ID }}:${{ inputs.sql_instance }}'" >> $GITHUB_ENV
+          echo 'SQL_INSTANCE_ID="--set-cloudsql-instances=${{ env.PROJECT_ID }}:${{ inputs.sql_instance }}"' >> $GITHUB_ENV
     - id: Deploy_to_CloudRun
       uses: google-github-actions/deploy-cloudrun@v0
       with:
