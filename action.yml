@@ -101,7 +101,7 @@ runs:
       uses: google-github-actions/deploy-cloudrun@v0
       with:
         service: ${{ inputs.service_id }}
-        image: gcr.io/${{ inputs.project_id }}/safehouse/${{ inputs.service_id }}:${{ inputs.tag }}
+        image: asia-docker.pkg.dev/${{ inputs.project_id }}/asia.gcr.io/${{ inputs.service_id }}:${{ inputs.tag }}
         secrets: ${{ inputs.secrets }}
         env_vars: ${{ inputs.env_vars }}
         region: ${{ inputs.gcp_region }}
