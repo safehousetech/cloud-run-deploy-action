@@ -61,10 +61,10 @@ runs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     - name: Authenticate in GCloud
-      uses: google-github-actions/auth@v0
+      uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ inputs.credentials_json }}
-    - uses: google-github-actions/setup-gcloud@v0
+    - uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: ${{ inputs.project_id }}
     - name: Set VPC_CONNECTOR env variable
@@ -98,7 +98,7 @@ runs:
           echo "SQL_INSTANCE_ID=--set-cloudsql-instances=${{ env.PROJECT_ID }}:asia-south2:${{ inputs.sql_instance }}" >> $GITHUB_ENV
         fi
     - id: Deploy_to_CloudRun
-      uses: google-github-actions/deploy-cloudrun@v0
+      uses: google-github-actions/deploy-cloudrun@v2
       with:
         service: ${{ inputs.service_id }}
         image: asia-docker.pkg.dev/${{ inputs.project_id }}/asia.gcr.io/${{ inputs.service_id }}:${{ inputs.tag }}
